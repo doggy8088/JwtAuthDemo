@@ -1,6 +1,6 @@
 ﻿using Microsoft.Extensions.Configuration;
 using Microsoft.IdentityModel.Tokens;
-using Microsoft.IdentityModel.JsonWebTokens;
+using System.IdentityModel.Tokens.Jwt;
 using System;
 using System.Collections.Generic;
 using System.Security.Claims;
@@ -64,9 +64,10 @@ namespace JwtAuthDemo.Helpers
                 SigningCredentials = signingCredentials
             };
 
-            // 產出序列化後的 Token 結果(字串格式)
-            var tokenHandler = new JsonWebTokenHandler();
-            var serializeToken = tokenHandler.CreateToken(tokenDescriptor);
+            // 產出所需要的 JWT securityToken 物件，並取得序列化後的 Token 結果(字串格式)
+            var tokenHandler = new JwtSecurityTokenHandler();
+            var securityToken = tokenHandler.CreateToken(tokenDescriptor);
+            var serializeToken = tokenHandler.WriteToken(securityToken);
 
             return serializeToken;
         }
