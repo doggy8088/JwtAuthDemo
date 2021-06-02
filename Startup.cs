@@ -73,19 +73,18 @@ namespace JwtAuthDemo
                 // 是否要顯示 API 呼叫範例
                 // config.GenerateExamples = true;
 
+                // 這個 OpenApiSecurityScheme 物件請勿加上 Name 與 In 屬性，否則產生出來的 OpenAPI Spec 格式會有錯誤！
                 var apiScheme = new OpenApiSecurityScheme()
                 {
-                    Type = OpenApiSecuritySchemeType.ApiKey,
-                    Name = "Authorization",
-                    In = OpenApiSecurityApiKeyLocation.Header,
-                    Description = "Copy this into the value field: Bearer {token}"
+                    Type = OpenApiSecuritySchemeType.Http,
+                    Scheme = JwtBearerDefaults.AuthenticationScheme,
+                    BearerFormat = "JWT", // for documentation purposes (OpenAPI only)
+                    Description = "Copy JWT Token into the value field: {token}"
                 };
 
-                config.AddSecurity("JWT Token", Enumerable.Empty<string>(), apiScheme);
-                // config.AddSecurity("API Token", Enumerable.Empty<string>(), apiScheme);
+                config.AddSecurity("Bearer", Enumerable.Empty<string>(), apiScheme);
 
-                config.OperationProcessors.Add(
-                    new AspNetCoreOperationSecurityScopeProcessor("JWT Token"));
+                config.OperationProcessors.Add(new AspNetCoreOperationSecurityScopeProcessor());
 
                 config.DefaultResponseReferenceTypeNullHandling = NJsonSchema.Generation.ReferenceTypeNullHandling.Null;
             });
